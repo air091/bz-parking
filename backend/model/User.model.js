@@ -11,7 +11,7 @@ class User {
   ) => {
     const query = `INSERT INTO users (user_type, first_name, last_name, password, email, phone_num)
                 VALUES (?, ?, ?, ?, ?, ?)`;
-    const [row] = await pool.query(query, [
+    const [rows] = await pool.query(query, [
       user_type,
       first_name,
       last_name,
@@ -19,7 +19,7 @@ class User {
       email,
       phone_num,
     ]);
-    return "User added successfully";
+    return rows[0];
   };
 
   static loginUser = async (credentials) => {
@@ -52,14 +52,14 @@ class User {
 
   static selectUserById = async (userId) => {
     const query = `SELECT * FROM users WHERE user_id = ?`;
-    const [row] = await pool.query(query, [userId]);
-    return row[0];
+    const [rows] = await pool.query(query, [userId]);
+    return rows[0];
   };
 
   static deleteUser = async (userId) => {
     const query = `DELETE FROM users WHERE user_id = ?`;
-    await pool.query(query, [userId]);
-    return "User deleted successfully.";
+    const [rows] = await pool.query(query, [userId]);
+    return rows[0];
   };
 
   static updateUser = async (userId, credentials) => {
@@ -101,9 +101,8 @@ class User {
     const query = `UPDATE users
                 SET ${fields.join(", ")}
                 WHERE user_id = ?`;
-    await pool.query(query, values);
-    const updatedUser = await User.selectUserById(userId);
-    return updatedUser;
+    const [rows] = await pool.query(query, values);
+    return rows[0];
   };
 }
 

@@ -10,7 +10,7 @@ const port = process.env.PORT;
 app.use(express.json());
 app.use(cors());
 
-app.post("/api/user", async (request, response) => {
+app.post("/api/user/register", async (request, response) => {
   try {
     let { user_type, phone_num } = request.body;
     const { first_name, last_name, password, email } = request.body;
@@ -18,7 +18,7 @@ app.post("/api/user", async (request, response) => {
     if (user_type === undefined) user_type = "Guest";
     if (phone_num === undefined) phone_num = null;
 
-    const user = await User.insertUser(
+    await User.insertUser(
       user_type,
       first_name,
       last_name,
@@ -27,7 +27,9 @@ app.post("/api/user", async (request, response) => {
       phone_num
     );
 
-    response.status(200).json({ status: true, message: user });
+    response
+      .status(200)
+      .json({ status: true, message: "User registered successfully" });
   } catch (error) {
     console.error(error);
     response.status(500).json({ status: false, message: error.message });
@@ -39,7 +41,7 @@ app.put("/api/user/:userId", async (request, response) => {
     const { userId } = request.params;
     const { user_type, first_name, last_name, password, email, phone_num } =
       request.body;
-    const updatedUser = await User.updateUser(userId, {
+    await User.updateUser(userId, {
       user_type: user_type,
       first_name: first_name,
       last_name: last_name,
@@ -47,7 +49,9 @@ app.put("/api/user/:userId", async (request, response) => {
       email: email,
       phone_num: phone_num,
     });
-    response.status(200).json({ status: true, update: updatedUser });
+    response
+      .status(200)
+      .json({ status: true, message: "User updated successfully" });
   } catch (error) {
     console.error(error);
     response.status(500).json({ status: false, message: error.message });
@@ -61,8 +65,10 @@ app.delete("/api/user/:userId", async (request, response) => {
     if (!deletedUser)
       return response
         .status(404)
-        .json({ status: false, message: "No user selected" });
-    response.status(200).json({ status: true, message: deletedUser });
+        .json({ status: false, message: "User not found" });
+    response
+      .status(200)
+      .json({ status: true, message: "User deleted successfully" });
   } catch (error) {
     console.error(error);
     response.status(500).json({ status: false, message: error.message });
@@ -84,7 +90,28 @@ app.post("/api/user/login", async (request, response) => {
         .json({ status: false, message: "Incorrect credentials" });
     response
       .status(200)
-      .json({ status: true, message: "Login successful", user });
+      .json({ status: true, message: "User logged in successful", user });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ status: false, message: error.message });
+  }
+});
+
+app.get("/api/user", async (request, response) => {
+  try {
+    const users = await User.selecAllUsers();
+    response.status(200).json({ status: true, users: users });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ status: false, message: error.message });
+  }
+});
+
+app.get("/api/user/:userId", async (request, response) => {
+  try {
+    const { userId } = request.params;
+    const user = await User.selectUserById(userId);
+    response.status(200).json({ status: true, user: user });
   } catch (error) {
     console.error(error);
     response.status(500).json({ status: false, message: error.message });
