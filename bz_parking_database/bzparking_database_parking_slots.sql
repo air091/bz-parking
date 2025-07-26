@@ -41,7 +41,7 @@ CREATE TABLE `parking_slots` (
 
 LOCK TABLES `parking_slots` WRITE;
 /*!40000 ALTER TABLE `parking_slots` DISABLE KEYS */;
-INSERT INTO `parking_slots` VALUES (1,'Level 1 - A1','occupied',1,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(2,'Level 1 - A2','available',2,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(3,'Level 1 - A3','held',3,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(4,'Level 2 - B1','available',4,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(5,'Level 2 - B2','occupied',5,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(6,'Level 2 - B3','available',6,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(7,'Level 3 - C1','held',7,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(8,'Level 3 - C2','occupied',8,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(9,'Level 3 - C3','available',9,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(10,'Level 1 - A4','held',10,'2025-07-26 01:29:17','2025-07-26 01:29:17');
+INSERT INTO `parking_slots` VALUES (1,'Level 1 - A1','occupied',1,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(2,'Level 1 - A2','occupied',2,'2025-07-26 01:29:17','2025-07-26 04:46:57'),(3,'Level 1 - A3','held',3,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(4,'Level 2 - B1','available',4,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(5,'Level 2 - B2','occupied',5,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(6,'Level 2 - B3','available',6,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(7,'Level 3 - C1','held',7,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(8,'Level 3 - C2','occupied',8,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(9,'Level 3 - C3','available',9,'2025-07-26 01:29:17','2025-07-26 01:29:17'),(10,'Level 1 - A4','held',10,'2025-07-26 01:29:17','2025-07-26 01:29:17');
 /*!40000 ALTER TABLE `parking_slots` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-26 10:38:24
+-- Dump completed on 2025-07-26 12:54:59
