@@ -11,20 +11,21 @@ const port = process.env.SERVER_PORT;
 app.use(cors());
 app.use(express.json());
 
+// change parking slot status available to occupied via sensor data if < 50
 app.put("/api/parking-slot/:slotId", async (request, response) => {
   try {
     const { slotId } = request.params;
-
+    // get sensor id
     const sensorIdQuery = `SELECT sensor_id FROM parking_slots WHERE slot_id = ?`;
     const [sensorRows] = await pool.query(sensorIdQuery, [slotId]);
 
     const sensorId = sensorRows[0].sensor_id;
-
+    // get sensor data
     const sensorData = await Sensor.selectSensorData(sensorId);
     const sensorValue = sensorData[0].sensor_data;
     if (!sensorData || sensorData.length === 0)
       throw new Error(`Sensor data not found`);
-    const status = sensorValue < 50 ? "occupied" : "available";
+    const status = sensorValue < 50 ? "occupied" : "available"; // compare
 
     const updateResult = await ParkingSlot.updateColumn(status, slotId);
     response.status(200).json({
