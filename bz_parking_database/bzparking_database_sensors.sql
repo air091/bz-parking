@@ -39,7 +39,7 @@ CREATE TABLE `sensors` (
 
 LOCK TABLES `sensors` WRITE;
 /*!40000 ALTER TABLE `sensors` DISABLE KEYS */;
-INSERT INTO `sensors` VALUES (1,'ultrasonic','working',120,'2025-07-26 01:23:56','2025-07-26 01:25:13'),(2,'ultrasonic','working',27,'2025-07-26 01:23:56','2025-07-26 01:25:34'),(3,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-07-26 01:25:35'),(4,'ultrasonic','working',1,'2025-07-26 01:23:56','2025-07-26 01:25:36'),(5,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-07-26 01:25:37'),(6,'ultrasonic','working',65,'2025-07-26 01:23:56','2025-07-26 01:25:39'),(7,'ultrasonic','working',1013,'2025-07-26 01:23:56','2025-07-26 01:25:40'),(8,'ultrasonic','working',350,'2025-07-26 01:23:56','2025-07-26 01:25:41'),(9,'ultrasonic','working',450,'2025-07-26 01:23:56','2025-07-26 01:25:43'),(10,'ultrasonic','defective',-1,'2025-07-26 01:23:56','2025-07-26 01:25:45');
+INSERT INTO `sensors` VALUES (1,'ultrasonic','working',62,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(2,'ultrasonic','working',67,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(3,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-07-26 01:25:35'),(4,'ultrasonic','working',85,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(5,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-07-26 01:25:37'),(6,'ultrasonic','working',96,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(7,'ultrasonic','working',30,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(8,'ultrasonic','working',9,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(9,'ultrasonic','working',88,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(10,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-07-27 01:52:47');
 /*!40000 ALTER TABLE `sensors` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-26 12:54:59
+-- Dump completed on 2025-07-27 10:32:27
