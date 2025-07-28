@@ -76,6 +76,65 @@ class Sensor {
       connection.release();
     }
   }
+
+  static async getAllSensors() {
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      const query = `SELECT * FROM sensors`;
+      const [rows] = await connection.execute(query);
+      await connection.commit();
+
+      return rows;
+    } catch (error) {
+      await connection.rollback();
+      console.error("Error getting all sensors:", error.message);
+    } finally {
+      connection.release();
+    }
+  }
+
+  static async getSingleSensor(sensorId) {
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      const query = `SELECT * FROM sensors WHERE sensor_id = ?`;
+      const [rows] = await connection.execute(query, [sensorId]);
+
+      await connection.commit();
+      return rows;
+    } catch (error) {
+      await connection.rollback();
+      console.error(
+        `Error getting "sensor id: ${sensorId}" sensors:`,
+        error.message
+      );
+    } finally {
+      connection.release();
+    }
+  }
+
+  static async deleteSingleSensor(sensorId) {
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      const query = `DELETE FROM sensors WHERE sensor_id = ?`;
+      const [rows] = await connection.execute(query, [sensorId]);
+
+      if (rows.affectedRows === 0) return [];
+
+      await connection.commit();
+      return rows;
+    } catch (error) {
+      await connection.rollback();
+      console.error(
+        `Error getting "sensor id: ${sensorId}" sensors:`,
+        error.message
+      );
+    } finally {
+      connection.release();
+    }
+  }
 }
 
 module.exports = Sensor;
