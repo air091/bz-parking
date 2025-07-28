@@ -114,20 +114,20 @@ class Sensor {
     }
   }
 
-  static async updateSingleSensorManual(sensorId, sensorData) {
+  static async updateSingleSensorManual(sensorId, sensorInformation) {
     const connection = await pool.getConnection();
     try {
       const fields = [];
       const values = [];
 
-      if (sensorData.sensorType !== undefined) {
+      if (sensorInformation.sensorType !== undefined) {
         fields.push("sensorType = ?");
-        values.push(sensorData.sensorType);
+        values.push(sensorInformation.sensorType);
       }
 
-      if (sensorData.status !== undefined) {
+      if (sensorInformation.status !== undefined) {
         fields.push("status = ?");
-        values.push(sensorData.status);
+        values.push(sensorInformation.status);
       }
       values.push(sensorId);
 

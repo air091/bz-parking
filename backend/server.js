@@ -1,9 +1,10 @@
 const express = require("express");
 const cors = require("cors");
-const Sensor = require("./model/Sensor.model.js");
-const ParkingSlot = require("./model/ParkingSlot.model.js");
+// const Sensor = require("./model/Sensor.model.js");
+// const ParkingSlot = require("./model/ParkingSlot.model.js");
 const { testConnection } = require("./database/Database.js");
 const sensorRoutes = require("./routes/Sensor.routes.js");
+const parkingSlotRoutes = require("./routes/ParkingSlot.routes.js");
 require("dotenv").config();
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/sensor", sensorRoutes);
+app.use("/api/parking-slot", parkingSlotRoutes);
 
 async function startServer() {
   try {
