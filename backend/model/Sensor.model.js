@@ -114,6 +114,43 @@ class Sensor {
     }
   }
 
+  static async updateSingleSensorManual(sensorId, sensorData) {
+    const connection = await pool.getConnection();
+    try {
+      const fields = [];
+      const values = [];
+
+      if (sensorData.sensorType !== undefined) {
+        fields.push("sensorType = ?");
+        values.push(sensorData.sensorType);
+      }
+
+      if (sensorData.status !== undefined) {
+        fields.push("status = ?");
+        values.push(sensorData.status);
+      }
+      values.push(sensorId);
+
+      await connection.beginTransaction();
+      const query = `UPDATE sensors
+                    SET ${fields.join(", ")}
+                    WHERE sensor_id = ?`;
+      const [rows] = await connection.execute(query, values);
+      await connection.commit();
+
+      if (rows.affectedRows === 0) return [];
+      return rows;
+    } catch (error) {
+      await connection.rollback();
+      console.error(
+        `Error updating "sensor id: ${sensorId}" sensors:`,
+        error.message
+      );
+    } finally {
+      connection.release();
+    }
+  }
+
   static async deleteSingleSensor(sensorId) {
     const connection = await pool.getConnection();
     try {

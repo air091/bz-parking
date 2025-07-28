@@ -36,6 +36,33 @@ class SensorController {
     }
   }
 
+  static async updateSingleSensor(request, response) {
+    try {
+      const { id } = request.params;
+      const { sensorType, status } = request.body;
+      const updatedSensor = await Sensor.updateSingleSensorManual(id, {
+        sensorType: sensorType,
+        status: status,
+      });
+
+      if (updatedSensor.length === 0)
+        return response
+          .status(404)
+          .json({ success: false, message: "Sensor not found" });
+
+      response
+        .status(200)
+        .json({ success: true, message: "Sensor successfully updated" });
+    } catch (error) {
+      console.log("Error sensor controller:", error.message);
+      response.status(500).json({
+        success: false,
+        message: "Sensor controller error",
+        errorMessage: error.message,
+      });
+    }
+  }
+
   static async deleteSingleSensor(request, response) {
     try {
       const { id } = request.params;
