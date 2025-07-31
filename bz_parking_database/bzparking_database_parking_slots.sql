@@ -42,7 +42,7 @@ CREATE TABLE `parking_slots` (
 
 LOCK TABLES `parking_slots` WRITE;
 /*!40000 ALTER TABLE `parking_slots` DISABLE KEYS */;
-INSERT INTO `parking_slots` VALUES (1,'Level 1 - A1','occupied',1,'2025-07-26 01:29:17','2025-07-30 13:17:54','car'),(2,'Level 1 - A2','occupied',2,'2025-07-26 01:29:17','2025-07-30 13:17:56','car'),(3,'Level 1 - A3','maintenace',3,'2025-07-26 01:29:17','2025-07-30 13:17:57','car'),(4,'Level 2 - B1','available',4,'2025-07-26 01:29:17','2025-07-30 13:18:04','motor'),(5,'Level 2 - B2','maintenace',5,'2025-07-26 01:29:17','2025-07-30 13:18:06','motor'),(6,'Level 2 - B3','available',6,'2025-07-26 01:29:17','2025-07-30 13:18:14','car'),(7,'Level 3 - C1','occupied',7,'2025-07-26 01:29:17','2025-07-30 13:18:19','motor'),(8,'Level 3 - C2','available',8,'2025-07-26 01:29:17','2025-07-30 13:18:22','motor'),(9,'Level 3 - C3','occupied',9,'2025-07-26 01:29:17','2025-07-30 13:18:24','motor'),(10,'Level 1 - A4','maintenace',10,'2025-07-26 01:29:17','2025-07-30 13:18:25','motor');
+INSERT INTO `parking_slots` VALUES (1,'GF','occupied',1,'2025-07-26 01:29:17','2025-07-31 09:58:38','car'),(2,'GF','occupied',2,'2025-07-26 01:29:17','2025-07-31 09:58:37','car'),(3,'BSMT','maintenace',3,'2025-07-26 01:29:17','2025-07-31 09:58:51','car'),(4,'GF','available',4,'2025-07-26 01:29:17','2025-07-31 09:58:33','motor'),(5,'BSMT','maintenace',5,'2025-07-26 01:29:17','2025-07-31 09:58:52','motor'),(6,'GF','available',6,'2025-07-26 01:29:17','2025-07-31 09:57:37','car'),(7,'GF','occupied',7,'2025-07-26 01:29:17','2025-07-31 09:57:34','motor'),(8,'BSMT','available',8,'2025-07-26 01:29:17','2025-07-31 09:58:56','motor'),(9,'GF','occupied',9,'2025-07-26 01:29:17','2025-07-31 09:57:27','motor'),(10,'GF','maintenace',10,'2025-07-26 01:29:17','2025-07-31 09:57:12','motor');
 /*!40000 ALTER TABLE `parking_slots` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-30 21:46:45
+-- Dump completed on 2025-07-31 19:01:30
