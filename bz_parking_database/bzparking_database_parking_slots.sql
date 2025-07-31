@@ -30,6 +30,7 @@ CREATE TABLE `parking_slots` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `vehicle_type` enum('car','motor') DEFAULT NULL,
+  `rate` decimal(5,2) DEFAULT NULL,
   PRIMARY KEY (`slot_id`),
   KEY `sensor_id` (`sensor_id`),
   CONSTRAINT `parking_slots_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`sensor_id`)
@@ -42,7 +43,7 @@ CREATE TABLE `parking_slots` (
 
 LOCK TABLES `parking_slots` WRITE;
 /*!40000 ALTER TABLE `parking_slots` DISABLE KEYS */;
-INSERT INTO `parking_slots` VALUES (1,'GF','occupied',1,'2025-07-26 01:29:17','2025-07-31 09:58:38','car'),(2,'GF','occupied',2,'2025-07-26 01:29:17','2025-07-31 09:58:37','car'),(3,'BSMT','maintenace',3,'2025-07-26 01:29:17','2025-07-31 09:58:51','car'),(4,'GF','available',4,'2025-07-26 01:29:17','2025-07-31 09:58:33','motor'),(5,'BSMT','maintenace',5,'2025-07-26 01:29:17','2025-07-31 09:58:52','motor'),(6,'GF','available',6,'2025-07-26 01:29:17','2025-07-31 09:57:37','car'),(7,'GF','occupied',7,'2025-07-26 01:29:17','2025-07-31 09:57:34','motor'),(8,'BSMT','available',8,'2025-07-26 01:29:17','2025-07-31 09:58:56','motor'),(9,'GF','occupied',9,'2025-07-26 01:29:17','2025-07-31 09:57:27','motor'),(10,'GF','maintenace',10,'2025-07-26 01:29:17','2025-07-31 09:57:12','motor');
+INSERT INTO `parking_slots` VALUES (1,'GF','occupied',1,'2025-07-26 01:29:17','2025-07-31 14:43:31','car',20.00),(2,'GF','occupied',2,'2025-07-26 01:29:17','2025-07-31 14:43:31','car',20.00),(3,'BSMT','maintenace',3,'2025-07-26 01:29:17','2025-07-31 14:43:31','car',20.00),(4,'GF','available',4,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00),(5,'BSMT','maintenace',5,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00),(6,'GF','available',6,'2025-07-26 01:29:17','2025-07-31 14:43:31','car',20.00),(7,'GF','occupied',7,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00),(8,'BSMT','available',8,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00),(9,'GF','occupied',9,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00),(10,'GF','maintenace',10,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00);
 /*!40000 ALTER TABLE `parking_slots` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-31 19:01:30
+-- Dump completed on 2025-07-31 22:44:39

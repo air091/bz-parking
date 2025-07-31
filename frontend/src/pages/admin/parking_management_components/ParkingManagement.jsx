@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import Card from "./Card";
 
 const ParkingManagement = () => {
   const [parkingSlots, setParkingSlots] = useState([]);
@@ -8,13 +9,14 @@ const ParkingManagement = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [selectedParkingSlot, setSelectedParkingSlot] = useState(null);
+
   const getData = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(
         "http://localhost:2701/api/parking-slot"
       );
-      console.log(response.data.parkingSlots);
       setParkingSlots(response.data.parkingSlots);
     } catch (error) {
       console.log(`Error getting parking slots: ${error.message}`);
@@ -33,64 +35,80 @@ const ParkingManagement = () => {
   );
 
   return (
-    <div>
-      <header>
-        <h1>Parking Management</h1>
-      </header>
-      <nav>
-        <div className="row1">
-          <button onClick={() => setShowMap(!showMap)}>
-            {showMap ? "Hide map" : "Show map"}
-          </button>
-        </div>
-        <div className="row2">
-          <button onClick={() => setSelectedLocation("GF")}>GF</button>
-          <button onClick={() => setSelectedLocation("BSMT")}>BSMT</button>
-        </div>
-      </nav>
-      {loading && <p>Loading...</p>}
-      {error && <p className="err">{error}</p>}
-      {!loading && !error && (
-        <main>
-          <div className="col1">
-            {showMap && (
-              <div className="map__wrapper">
-                <img src="../../../public/vite.svg" alt="image" />
-              </div>
-            )}
+    <div className="col1__a">
+      <div className="col1__a_b">
+        <header>
+          <h1>Parking Management</h1>
+        </header>
+        <nav>
+          <div className="row1">
+            <button onClick={() => setShowMap(!showMap)}>
+              {showMap ? "Hide map" : "Show map"}
+            </button>
           </div>
-          <div className="col2">
-            <table>
-              <thead>
-                <tr>
-                  <th>Slot Id</th>
-                  <th>Location</th>
-                  <th>Status</th>
-                  <th>Added in</th>
-                  <th>Last update</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredSlots.length > 0 ? (
-                  filteredSlots.map((slot) => (
-                    <tr key={slot.slot_id} className="parking__slot">
-                      <td>{slot.slot_id}</td>
-                      <td>{slot.location}</td>
-                      <td>{slot.status}</td>
-                      <td>{new Date(slot.created_at).toLocaleString()}</td>
-                      <td>{new Date(slot.updated_at).toLocaleString()}</td>
-                    </tr>
-                  ))
-                ) : (
+          <div className="row2">
+            <button onClick={() => setSelectedLocation("GF")}>GF</button>
+            <button onClick={() => setSelectedLocation("BSMT")}>BSMT</button>
+          </div>
+        </nav>
+        {loading && <p>Loading...</p>}
+        {error && <p className="err">{error}</p>}
+        {!loading && !error && (
+          <main>
+            <div className="col1">
+              {showMap && (
+                <div className="map__wrapper">
+                  <img src="../../../public/vite.svg" alt="image" />
+                </div>
+              )}
+            </div>
+            <div className="col2">
+              <table>
+                <thead>
                   <tr>
-                    <td colSpan={4}>No parking slot available</td>
+                    <th>Slot Id</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Added in</th>
+                    <th>Last update</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </main>
-      )}
+                </thead>
+                <tbody>
+                  {filteredSlots.length > 0 ? (
+                    filteredSlots.map((slot) => (
+                      <tr
+                        key={slot.slot_id}
+                        className={`parking__slot ${
+                          selectedParkingSlot?.slot_id === slot.slot_id
+                            ? "selected"
+                            : ""
+                        }`}
+                        onClick={() => setSelectedParkingSlot(slot)}
+                      >
+                        <td>{slot.slot_id}</td>
+                        <td>{slot.vehicle_type}</td>
+                        <td>{slot.location}</td>
+                        <td>{slot.status}</td>
+                        <td>{new Date(slot.created_at).toLocaleString()}</td>
+                        <td>{new Date(slot.updated_at).toLocaleString()}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={4}>No parking slot available</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </main>
+        )}
+      </div>
+      <Card
+        selectedParkingSlot={selectedParkingSlot}
+        setSelectedParkingSlot={setSelectedParkingSlot}
+      />
     </div>
   );
 };
