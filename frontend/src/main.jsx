@@ -8,8 +8,9 @@ import {
 } from "react-router-dom";
 import Layout from "./Layout.jsx";
 import Home from "./pages/user/Home.jsx";
-import Dashboard from "./pages/admin/Dashboard.jsx";
-import Employee from "./pages/admin/Employee.jsx";
+import Dashboard from "./pages/admin/dashboard_components/Dashboard.jsx";
+import ParkingManagement from "./pages/admin/parking_management_components/ParkingManagement.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 const router = createBrowserRouter([
   {
@@ -25,14 +26,18 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "/admin/employee",
-        element: <Employee />,
+        path: "/admin/parking",
+        element: <ParkingManagement />,
       },
     ],
   },
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 

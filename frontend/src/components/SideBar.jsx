@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 const SideBar = () => {
   const navLinks = [
     { path: "/admin/dashboard", label: "Dashboard" },
-    { path: "/admin/employee", label: "Employee" },
+    { path: "/admin/parking", label: "Parking" },
   ];
   return (
     <div>
