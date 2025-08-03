@@ -24,9 +24,74 @@ const Card = ({ selectedParkingSlot, setSelectedParkingSlot }) => {
     }
   }, [selectedParkingSlot]);
 
+  const updateSensorStatus = useCallback(async () => {
+    if (!selectedParkingSlot || !sensor) return null;
+    try {
+      setLoading(true);
+      setError(null);
+
+      const newSensorStatus =
+        sensor.status === "working" ? "defective" : "working";
+
+      // Update sensor status
+      const sensorResponse = await axios.put(
+        `http://localhost:2701/api/sensor/${sensor.sensor_id}`,
+        {
+          status: newSensorStatus,
+        }
+      );
+      setSensor(sensorResponse.data.sensor);
+
+      // If sensor becomes defective, update parking slot status to maintenance
+      if (newSensorStatus === "defective") {
+        await axios.put(
+          `http://localhost:2701/api/parking-slot/${selectedParkingSlot.slot_id}`,
+          {
+            status: "maintenace",
+          }
+        );
+
+        // Update the selected parking slot locally
+        setSelectedParkingSlot((prev) => ({
+          ...prev,
+          status: "maintenace",
+        }));
+      } else if (newSensorStatus === "working") {
+        // If sensor becomes working again, update parking slot status back to available
+        await axios.put(
+          `http://localhost:2701/api/parking-slot/${selectedParkingSlot.slot_id}`,
+          {
+            status: "available",
+          }
+        );
+
+        // Update the selected parking slot locally
+        setSelectedParkingSlot((prev) => ({
+          ...prev,
+          status: "available",
+        }));
+      }
+
+      console.log("Sensor updated:", sensorResponse.data.sensor);
+    } catch (error) {
+      console.log(`Error updating sensor status: ${error}`);
+      setError("Failed to update sensor status");
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedParkingSlot, sensor, setSelectedParkingSlot]);
+
   useEffect(() => {
     if (selectedParkingSlot) {
       getData();
+
+      // Set up automatic polling every 3 seconds for sensor data
+      const intervalId = setInterval(() => {
+        getData();
+      }, 3000);
+
+      // Cleanup interval on component unmount or when selectedParkingSlot changes
+      return () => clearInterval(intervalId);
     } else {
       setSensor(null);
       setError(null);
@@ -58,6 +123,11 @@ const Card = ({ selectedParkingSlot, setSelectedParkingSlot }) => {
             <header>
               <h2>Sensor details</h2>
             </header>
+            <div
+              style={{ fontSize: "12px", color: "#666", marginBottom: "10px" }}
+            >
+              Auto-refreshing sensor data...
+            </div>
             {loading ? (
               <p>Loading sensor data...</p>
             ) : error ? (
@@ -79,7 +149,11 @@ const Card = ({ selectedParkingSlot, setSelectedParkingSlot }) => {
             )}
           </div>
           <div>
-            <button>Maintenace</button>
+            {sensor && (
+              <button onClick={updateSensorStatus}>
+                {sensor.status === "defective" ? "Start" : "Stop"}
+              </button>
+            )}
             <button onClick={() => setSelectedParkingSlot(null)}>Clear</button>
           </div>
         </main>

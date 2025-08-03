@@ -11,7 +11,7 @@ class parkingSlotController {
 
       response.status(200).json({ success: true, parkingSlot: newParkingSlot });
     } catch (error) {
-      console.log("Error parking slot error");
+      console.log("Error parking slot Insert error");
       console.log("Error message:", error.message);
       response.status(500).json({
         success: false,
@@ -30,7 +30,7 @@ class parkingSlotController {
           .json({ success: false, message: "No parking slots yet" });
       response.status(200).json({ success: true, parkingSlots: parkingSlots });
     } catch (error) {
-      console.log("Error parking slot error");
+      console.log("Error parking slot getAll error");
       console.log("Error message:", error.message);
       response.status(500).json({
         success: false,
@@ -50,7 +50,7 @@ class parkingSlotController {
           .json({ success: false, message: "No parking slot found" });
       response.status(200).json({ success: true, parkingSlot: parkingSlot });
     } catch (error) {
-      console.log("Error parking slot error");
+      console.log("Error parking slot getSingle error");
       console.log("Error message:", error.message);
       response.status(500).json({
         success: false,
@@ -77,7 +77,7 @@ class parkingSlotController {
         .status(200)
         .json({ success: true, message: "Parking slot updated successfully" });
     } catch (error) {
-      console.log("Error parking slot error");
+      console.log("Error parking slot update error");
       console.log("Error message:", error.message);
       response.status(500).json({
         success: false,
@@ -101,7 +101,7 @@ class parkingSlotController {
         .status(200)
         .json({ success: true, message: "Parking slot deleted successfully" });
     } catch (error) {
-      console.log("Error parking slot error");
+      console.log("Error parking slot delete error");
       console.log("Error message:", error.message);
       response.status(500).json({
         success: false,

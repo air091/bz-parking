@@ -50,9 +50,14 @@ class SensorController {
           .status(404)
           .json({ success: false, message: "Sensor not found" });
 
-      response
-        .status(200)
-        .json({ success: true, message: "Sensor successfully updated" });
+      // Get the updated sensor data
+      const sensorData = await Sensor.getSingleSensor(id);
+
+      response.status(200).json({
+        success: true,
+        message: "Sensor successfully updated",
+        sensor: sensorData[0],
+      });
     } catch (error) {
       console.log("Error sensor controller:", error.message);
       response.status(500).json({

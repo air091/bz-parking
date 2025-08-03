@@ -5,7 +5,7 @@ class Sensor {
     console.log("Sensor autimation...");
     setInterval(async () => {
       await this.updateSensorData();
-    }, 5000);
+    }, 10000);
     console.log("Aumation started - updates sensor data every second");
   }
 
@@ -68,7 +68,7 @@ class Sensor {
       await connection.execute(queryUpdateParkingSlotStatus, [sensor_id]);
 
       await connection.commit();
-      console.log(`🔧 Sensor ${sensor_id}: DEFECTIVE -> Slot: maintenance`);
+      console.log(`🔧 Sensor ${sensor_id}: DEFECTIVE -> Slot: maintenace`);
     } catch (error) {
       await connection.rollback();
       console.error("Error handling defective sensor:", error.message);

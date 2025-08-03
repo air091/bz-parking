@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-// const Sensor = require("./model/Sensor.model.js");
+const Sensor = require("./model/Sensor.model.js");
 // const ParkingSlot = require("./model/ParkingSlot.model.js");
 const { testConnection } = require("./database/Database.js");
 const sensorRoutes = require("./routes/Sensor.routes.js");

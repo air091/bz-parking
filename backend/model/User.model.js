@@ -1,4 +1,4 @@
-const pool = require("../database/Database.js");
+const { pool } = require("../database/Database.js");
 
 class User {
   static insertUser = async (

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import Card from "./Card";
+import { Outlet } from "react-router-dom";
 
 const ParkingManagement = () => {
   const [parkingSlots, setParkingSlots] = useState([]);
@@ -28,6 +29,14 @@ const ParkingManagement = () => {
 
   useEffect(() => {
     getData();
+
+    // Set up automatic polling every 3 seconds
+    const intervalId = setInterval(() => {
+      getData();
+    }, 3000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, [getData]);
 
   const filteredSlots = parkingSlots.filter(
@@ -63,6 +72,15 @@ const ParkingManagement = () => {
               )}
             </div>
             <div className="col2">
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: "#666",
+                  marginBottom: "10px",
+                }}
+              >
+                Auto-refreshing every 3 seconds...
+              </div>
               <table>
                 <thead>
                   <tr>
@@ -96,7 +114,7 @@ const ParkingManagement = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={4}>No parking slot available</td>
+                      <td colSpan={6}>No parking slot available</td>
                     </tr>
                   )}
                 </tbody>
