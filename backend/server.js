@@ -5,6 +5,7 @@ const Sensor = require("./model/Sensor.model.js");
 const { testConnection } = require("./database/Database.js");
 const sensorRoutes = require("./routes/Sensor.routes.js");
 const parkingSlotRoutes = require("./routes/ParkingSlot.routes.js");
+const paymentRoutes = require("./routes/Payment.routes.js");
 require("dotenv").config();
 
 const app = express();
@@ -15,11 +16,12 @@ app.use(express.json());
 
 app.use("/api/sensor", sensorRoutes);
 app.use("/api/parking-slot", parkingSlotRoutes);
+app.use("/api/payment", paymentRoutes);
 
 async function startServer() {
   try {
     await testConnection();
-    // Sensor.startAutmation();
+    Sensor.startAutmation();
     app.listen(port, () => {
       console.log("Server running on port:", port);
     });

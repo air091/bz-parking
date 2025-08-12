@@ -114,7 +114,7 @@ const ParkingManagement = () => {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6}>No parking slot available</td>
+                      <td colSpan={6}>Parking slot is empty.</td>
                     </tr>
                   )}
                 </tbody>

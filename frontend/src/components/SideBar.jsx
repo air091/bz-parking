@@ -5,6 +5,7 @@ const SideBar = () => {
   const navLinks = [
     { path: "/admin/dashboard", label: "Dashboard" },
     { path: "/admin/parking", label: "Parking" },
+    { path: "/admin/payment", label: "Payment" },
   ];
   return (
     <div>

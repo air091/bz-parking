@@ -6,7 +6,7 @@ class UserController {
       let { user_type, phone_num } = request.body;
       const { first_name, last_name, password, email } = request.body;
 
-      if (user_type === undefined) user_type = "Guest";
+      if (user_type === undefined) user_type = "guest";
       if (phone_num === undefined) phone_num = null;
 
       await User.insertUser(
@@ -96,10 +96,10 @@ class UserController {
     try {
       const { userId } = request.params;
       const deletedUser = await User.deleteUser(userId);
-      if (!deletedUser)
-        return response
-          .status(404)
-          .json({ status: false, message: "User not found" });
+
+      if (deletedUser.length === 0)
+        return response.status(404).json({ message: "User not found" });
+
       response
         .status(200)
         .json({ status: true, message: "User deleted successfully" });

@@ -6,17 +6,28 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import Layout from "./Layout.jsx";
+import AdminLayout from "./AdminLayout.jsx";
+
+// USER
 import Home from "./pages/user/Home.jsx";
+import Register from "./pages/user/Register.jsx";
+import Login from "./pages/user/Login.jsx";
+
+// ADMIN
 import Dashboard from "./pages/admin/dashboard_components/Dashboard.jsx";
 import ParkingManagement from "./pages/admin/parking_management_components/ParkingManagement.jsx";
 import NotFound from "./pages/NotFound.jsx";
-import Card from "./pages/admin/parking_management_components/Card.jsx";
+import Payment from "./pages/admin/payment_components/Payment.jsx";
+import UserLayout from "./UserLayout.jsx";
+
+// CONTEXT
+import { AuthProvider } from "./context/AuthContext.jsx";
+import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/admin",
-    element: <Layout />,
+    element: <AdminLayout />,
     children: [
       {
         path: "/admin",
@@ -29,18 +40,46 @@ const router = createBrowserRouter([
       {
         path: "/admin/parking",
         element: <ParkingManagement />,
-        // children: [
-        //   {
-        //     path: "/admin/parking/:slotId",
-        //     element: <Card />,
-        //   },
-        // ],
+      },
+      {
+        path: "/admin/payment",
+        element: <Payment />,
       },
     ],
   },
   {
     path: "/",
-    element: <Home />,
+    element: <UserLayout />,
+    children: [
+      {
+        path: "/register",
+        element: (
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: "/login",
+        element: (
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        ),
+      },
+      {
+        path: "/home",
+        element: (
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/",
+        element: <Navigate to="/home" replace />,
+      },
+    ],
   },
   {
     path: "*",
@@ -50,6 +89,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router}></RouterProvider>
+    <AuthProvider>
+      <RouterProvider router={router}></RouterProvider>
+    </AuthProvider>
   </StrictMode>
 );

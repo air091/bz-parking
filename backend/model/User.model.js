@@ -57,9 +57,21 @@ class User {
   };
 
   static deleteUser = async (userId) => {
+    const connection = await pool.getConnection();
     const query = `DELETE FROM users WHERE user_id = ?`;
-    const [rows] = await pool.query(query, [userId]);
-    return rows[0];
+    try {
+      await connection.beginTransaction();
+      const [rows] = await connection.execute(query, [userId]);
+      await connection.commit();
+      if (rows.length === 0) return [];
+      return rows;
+    } catch (error) {
+      await connection.rollback();
+      console.log(`Error getting Deleting User id: ${userId}`);
+      console.log(`Error msg: ${error.message}`);
+    } finally {
+      connection.release();
+    }
   };
 
   static updateUser = async (userId, credentials) => {
