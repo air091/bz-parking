@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
-const Login = () => {
+const Login = ({ onLoginSuccess, onSwitchToRegister }) => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,11 @@ const Login = () => {
 
       if (response.data.status) {
         login(response.data.user);
-        navigate("/home");
+        if (onLoginSuccess) {
+          onLoginSuccess(); // Close modal if it's being used as modal
+        } else {
+          navigate("/home"); // Navigate if it's a standalone page
+        }
       } else {
         setError(response.data.message);
       }
@@ -41,10 +45,11 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className="login__container">
       <header>
         <h1>Login</h1>
       </header>
+      {error && <div className="error__message">{error}</div>}
       <form>
         <div>
           <label htmlFor="email">Email</label>
@@ -68,7 +73,19 @@ const Login = () => {
             }
           />
         </div>
-        <button onClick={handleSubmit}>Login</button>
+        <button onClick={handleSubmit} disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
+        <p>
+          Don't have an account?{" "}
+          {onSwitchToRegister ? (
+            <span onClick={onSwitchToRegister} className="switch__link">
+              Register here
+            </span>
+          ) : (
+            <Link to="/register">Register here</Link>
+          )}
+        </p>
       </form>
     </div>
   );

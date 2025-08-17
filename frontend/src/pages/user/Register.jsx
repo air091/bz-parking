@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const Register = () => {
+const Register = ({ onRegisterSuccess, onSwitchToLogin }) => {
   const [credentials, setCredentials] = useState({
     firstName: "",
     lastName: "",
@@ -41,21 +41,28 @@ const Register = () => {
         );
         if (loginResponse.data.status) {
           login(loginResponse.data.user);
-          navigate("/home");
+          if (onRegisterSuccess) {
+            onRegisterSuccess(); // Close modal if it's being used as modal
+          } else {
+            navigate("/home"); // Navigate if it's a standalone page
+          }
         }
       } else {
         setError(registerResponse.data.message);
       }
     } catch (error) {
-      setError(error);
+      setError(error.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <header>Registration</header>
+    <div className="register__container">
+      <header>
+        <h1>Registration</h1>
+      </header>
+      {error && <div className="error__message">{error}</div>}
       <form>
         <div>
           <label htmlFor="first_name">First name</label>
@@ -112,8 +119,20 @@ const Register = () => {
             }
           />
         </div>
-        <button onClick={handleButton}>Register</button>
+        <button onClick={handleButton} disabled={loading}>
+          {loading ? "Registering..." : "Register"}
+        </button>
       </form>
+      <p>
+        Already have an account?{" "}
+        {onSwitchToLogin ? (
+          <span onClick={onSwitchToLogin} className="switch__link">
+            Login here
+          </span>
+        ) : (
+          <Link to="/login">Login here</Link>
+        )}
+      </p>
     </div>
   );
 };
