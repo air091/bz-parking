@@ -116,6 +116,13 @@ class User {
     const [rows] = await pool.query(query, values);
     return rows[0];
   };
+
+  static insertGuestUser = async () => {
+    const query = `INSERT INTO users (user_type, first_name, last_name, password, email, phone_num)
+                  VALUES ('guest', 'Guest', 'User', NULL, NULL, NULL)`;
+    const [rows] = await pool.query(query);
+    return rows[0];
+  };
 }
 
 module.exports = User;

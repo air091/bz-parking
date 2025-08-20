@@ -51,6 +51,25 @@ class ParkingActivity {
       connection.release();
     }
   }
+
+  static async createParkingActivity(userId, slotId) {
+    const connection = await pool.getConnection();
+    const query = `INSERT INTO parking_activities (user_id, slot_id, arrival_time, status) 
+                  VALUES (?, ?, NOW(), 'active')`;
+    try {
+      await connection.beginTransaction();
+      const [rows] = await connection.execute(query, [userId, slotId]);
+      await connection.commit();
+      return rows[0];
+    } catch (error) {
+      await connection.rollback();
+      console.log("Error creating parking activity");
+      console.log(`Error msg: ${error.message}`);
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
 }
 
 module.exports = ParkingActivity;
