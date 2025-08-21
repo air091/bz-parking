@@ -21,7 +21,7 @@ app.use("/api/payment", paymentRoutes);
 async function startServer() {
   try {
     await testConnection();
-    Sensor.startAutmation();
+    // Sensor.startAutmation();
     app.listen(port, () => {
       console.log("Server running on port:", port);
     });

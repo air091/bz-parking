@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import "../../components/home_components/home-style.css";
+import Map from "../../components/home_components/Map";
 
 const Home = () => {
   const { user, logout } = useAuth();
@@ -31,6 +32,9 @@ const Home = () => {
             </p>
           </div>
         )}
+        <div>
+          <Map />
+        </div>
       </main>
     </div>
   );

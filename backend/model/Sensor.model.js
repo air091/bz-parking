@@ -5,7 +5,7 @@ class Sensor {
     console.log("Sensor autimation...");
     setInterval(async () => {
       await this.updateSensorData();
-    }, 30000);
+    }, 300000);
     console.log("Aumation started - updates sensor data every second");
   }
 

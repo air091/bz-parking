@@ -1,0 +1,8 @@
+.map__container main.row__3 {
+    border: 2px solid red;
+}
+
+.map__container main.row__3 .parking__tab {
+    border: 2px solid blue;
+    width: fit-content;
+}
