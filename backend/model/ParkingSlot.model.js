@@ -7,16 +7,12 @@ class ParkingSlot {
       await connection.beginTransaction();
       const query = `INSERT INTO parking_slots (location, sensor_id)
                   VALUES (?, ?)`;
-      const [rows] = await connection.execute(query, [
-        location,
-        status,
-        sensor_id,
-      ]);
+      const [rows] = await connection.execute(query, [location, sensor_id]);
       await connection.commit();
       return rows;
     } catch (error) {
       console.log("Error adding parking slot");
-      console.log(`Error messsage: ${error.message}`);
+      console.log(`Error message: ${error.message}`);
     } finally {
       connection.release();
     }
@@ -66,14 +62,16 @@ class ParkingSlot {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      const query = `SELECT * FROM parking_slots`;
+      const query = `SELECT ps.*, v.vehicle_type 
+                     FROM parking_slots ps 
+                     LEFT JOIN vehicles v ON ps.vehicle_type_id = v.vehicle_id`;
       const [rows] = await connection.execute(query);
       await connection.commit();
       if (rows.length === 0) return [];
       return rows;
     } catch (error) {
       await connection.rollback();
-      console.log(`Error getting all parking slosts`);
+      console.log(`Error getting all parking slots`);
       console.log(`Error message: ${error.message}`);
     } finally {
       connection.release();
@@ -84,7 +82,10 @@ class ParkingSlot {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
-      const query = `SELECT * FROM parking_slots WHERE slot_id = ?`;
+      const query = `SELECT ps.*, v.vehicle_type 
+                     FROM parking_slots ps 
+                     LEFT JOIN vehicles v ON ps.vehicle_type_id = v.vehicle_id 
+                     WHERE ps.slot_id = ?`;
       const [rows] = await connection.execute(query, [parkingSlotId]);
       await connection.commit();
 

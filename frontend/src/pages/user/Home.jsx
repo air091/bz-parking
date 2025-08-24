@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import "../../components/home_components/home-style.css";
 import Map from "../../components/home_components/Map";
+import ParkingSlotCard from "../../components/home_components/ParkingSlotCard";
 
 const Home = () => {
   const { user, logout } = useAuth();
+  const [selectedParkingSlot, setSelectedParkingSlot] = useState(null);
 
   const handleLogout = () => logout();
+
+  const handleParkingSlotSelect = (slot) => {
+    setSelectedParkingSlot(slot);
+  };
 
   return (
     <div className="home__container">
@@ -33,9 +39,23 @@ const Home = () => {
           </div>
         )}
         <div>
-          <Map />
+          <Map onParkingSlotSelect={handleParkingSlotSelect} />
         </div>
       </main>
+
+      {/* Parking Slot Card */}
+      {selectedParkingSlot ? (
+        <div>
+          <ParkingSlotCard
+            selectedParkingSlot={selectedParkingSlot}
+            setSelectedParkingSlot={setSelectedParkingSlot}
+          />
+        </div>
+      ) : (
+        <div>
+          <p>Select a parking slot</p>
+        </div>
+      )}
     </div>
   );
 };

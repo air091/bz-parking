@@ -1,14 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import ParkingSlotCard from "../ParkingSlotCard";
 import "./home-style.css";
 
-const Map = () => {
+const Map = ({ onParkingSlotSelect }) => {
   const [showMap, setShowMap] = useState(false);
   const [parkingSlots, setParkingSlots] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState("car");
   const [selectedLocation, setSelectedLocation] = useState("GF");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedParkingSlot, setSelectedParkingSlot] = useState(null);
 
   const getData = useCallback(async () => {
     try {
@@ -39,6 +41,14 @@ const Map = () => {
     setSelectedLocation("");
   };
 
+  const handleParkingSlotClick = (slot) => {
+    setSelectedParkingSlot(slot);
+    // If parent component provided callback, call it
+    if (onParkingSlotSelect) {
+      onParkingSlotSelect(slot);
+    }
+  };
+
   const filteredSlots = useMemo(() => {
     return parkingSlots.filter((slot) => {
       const vehicleMatch =
@@ -67,7 +77,7 @@ const Map = () => {
           <div>
             <button onClick={clearFilters}>Show all</button>
             <button onClick={() => setSelectedVehicle("car")}>Car</button>
-            <button onClick={() => setSelectedVehicle("motor")}>Motor</button>
+            <button onClick={() => setSelectedVehicle("bike")}>Bike</button>
             <button onClick={() => setSelectedLocation("GF")}>GF</button>
             <button onClick={() => setSelectedLocation("BSMT")}>BSMT</button>
           </div>
@@ -107,7 +117,12 @@ const Map = () => {
                     }}
                   >
                     {filteredSlots.map((slot) => (
-                      <div className="parking__tab" key={slot.slot_id}>
+                      <div
+                        className="parking__tab"
+                        key={slot.slot_id}
+                        onClick={() => handleParkingSlotClick(slot)}
+                        style={{ cursor: "pointer" }}
+                      >
                         <div
                           className="row__1"
                           style={{
