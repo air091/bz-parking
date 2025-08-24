@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useParkingSlots } from "../../hooks/useParkingSlots";
 import "../../components/home_components/home-style.css";
 import Map from "../../components/home_components/Map";
-import ParkingSlotCard from "../../components/home_components/ParkingSlotCard";
 
 const Home = () => {
   const { user, logout } = useAuth();
-  const [selectedParkingSlot, setSelectedParkingSlot] = useState(null);
 
   const handleLogout = () => logout();
 
   const handleParkingSlotSelect = (slot) => {
-    setSelectedParkingSlot(slot);
+    // This callback is now optional since Map.jsx handles the modal internally
+    // We can use it for any additional logic if needed in the future
+    console.log("Parking slot selected:", slot);
   };
 
   return (
@@ -42,20 +42,6 @@ const Home = () => {
           <Map onParkingSlotSelect={handleParkingSlotSelect} />
         </div>
       </main>
-
-      {/* Parking Slot Card */}
-      {selectedParkingSlot ? (
-        <div>
-          <ParkingSlotCard
-            selectedParkingSlot={selectedParkingSlot}
-            setSelectedParkingSlot={setSelectedParkingSlot}
-          />
-        </div>
-      ) : (
-        <div>
-          <p>Select a parking slot</p>
-        </div>
-      )}
     </div>
   );
 };

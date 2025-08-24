@@ -48,7 +48,9 @@ class parkingSlotController {
         return response
           .status(404)
           .json({ success: false, message: "No parking slot found" });
-      response.status(200).json({ success: true, parkingSlot: parkingSlot });
+      
+      // Return the first (and only) parking slot object instead of the array
+      response.status(200).json({ success: true, parkingSlot: parkingSlot[0] });
     } catch (error) {
       console.log("Error parking slot getSingle error");
       console.log("Error message:", error.message);

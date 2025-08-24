@@ -1,40 +1,33 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import axios from "axios";
-import ParkingSlotCard from "../ParkingSlotCard";
+import React, { useEffect, useMemo, useState } from "react";
+import ParkingSlotCard from "./ParkingSlotCard";
+import { useParkingSlots } from "../../hooks/useParkingSlots";
 import "./home-style.css";
 
 const Map = ({ onParkingSlotSelect }) => {
   const [showMap, setShowMap] = useState(false);
-  const [parkingSlots, setParkingSlots] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState("car");
   const [selectedLocation, setSelectedLocation] = useState("GF");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [selectedParkingSlot, setSelectedParkingSlot] = useState(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
-  const getData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await axios.get(
-        "http://localhost:2701/api/parking-slot"
-      );
-      setParkingSlots(response.data.parkingSlots || []);
-    } catch (err) {
-      setError("Failed to load parking slots.");
-      console.log(`Error getting parking slots: ${err.message}`);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  // Use the custom hook for parking slots management
+  const {
+    parkingSlots,
+    loading,
+    error,
+    hasChanges,
+    lastUpdateTime,
+    updateSlot,
+  } = useParkingSlots();
 
+  // Update current time every second for real-time timer calculations
   useEffect(() => {
-    getData();
-    const intervalId = setInterval(() => {
-      getData();
-    }, 3000);
-    return () => clearInterval(intervalId);
-  }, [getData]);
+    const timeInterval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timeInterval);
+  }, []);
 
   const clearFilters = () => {
     setSelectedVehicle("");
@@ -47,6 +40,23 @@ const Map = ({ onParkingSlotSelect }) => {
     if (onParkingSlotSelect) {
       onParkingSlotSelect(slot);
     }
+  };
+
+  const handleSlotUpdate = (updatedSlot) => {
+    // Update the selected parking slot
+    setSelectedParkingSlot(updatedSlot);
+
+    // Update the parking slots list with the updated slot
+    updateSlot(updatedSlot);
+
+    // If parent component provided callback, call it with updated slot
+    if (onParkingSlotSelect) {
+      onParkingSlotSelect(updatedSlot);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setSelectedParkingSlot(null);
   };
 
   const filteredSlots = useMemo(() => {
@@ -103,7 +113,20 @@ const Map = ({ onParkingSlotSelect }) => {
                     marginBottom: "10px",
                   }}
                 >
-                  Auto-refreshing every 3 seconds...
+                  {hasChanges ? (
+                    <span style={{ color: "#4caf50" }}>
+                      ✓ Auto-updating when changes detected
+                    </span>
+                  ) : (
+                    <span style={{ color: "#666" }}>
+                      Monitoring for changes...
+                    </span>
+                  )}
+                  {lastUpdateTime && (
+                    <span style={{ marginLeft: "10px", fontSize: "11px" }}>
+                      Last update: {lastUpdateTime.toLocaleTimeString()}
+                    </span>
+                  )}
                 </div>
                 {filteredSlots.length === 0 ? (
                   <p>No slots match the current filters.</p>
@@ -171,6 +194,30 @@ const Map = ({ onParkingSlotSelect }) => {
           </div>
         )}
       </main>
+
+      {/* Parking Slot Card Modal - Now always shown when slot is selected */}
+      {selectedParkingSlot && (
+        <div>
+          <div
+            style={{
+              backgroundColor: "white",
+              padding: "20px",
+              borderRadius: "8px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+              maxWidth: "500px",
+              width: "90%",
+              maxHeight: "80vh",
+              overflow: "auto",
+            }}
+          >
+            <ParkingSlotCard
+              selectedParkingSlot={selectedParkingSlot}
+              setSelectedParkingSlot={setSelectedParkingSlot}
+              onSlotUpdate={handleSlotUpdate}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

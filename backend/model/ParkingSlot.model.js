@@ -62,6 +62,10 @@ class ParkingSlot {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
+
+      // First, check and auto-expire held slots that are older than 3 minutes
+      await this.checkAndExpireHeldSlots(connection);
+
       const query = `SELECT ps.*, v.vehicle_type 
                      FROM parking_slots ps 
                      LEFT JOIN vehicles v ON ps.vehicle_type_id = v.vehicle_id`;
@@ -82,6 +86,10 @@ class ParkingSlot {
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
+
+      // Check and auto-expire held slots before getting the specific slot
+      await this.checkAndExpireHeldSlots(connection);
+
       const query = `SELECT ps.*, v.vehicle_type 
                      FROM parking_slots ps 
                      LEFT JOIN vehicles v ON ps.vehicle_type_id = v.vehicle_id 
@@ -97,6 +105,25 @@ class ParkingSlot {
       console.log(`Error message: ${error.message}`);
     } finally {
       connection.release();
+    }
+  }
+
+  static async checkAndExpireHeldSlots(connection) {
+    try {
+      // Find held slots that are older than 3 minutes (180 seconds)
+      const expireQuery = `
+        UPDATE parking_slots 
+        SET status = 'available' 
+        WHERE status = 'held' 
+        AND TIMESTAMPDIFF(SECOND, updated_at, NOW()) > 180
+      `;
+      const [result] = await connection.execute(expireQuery);
+
+      if (result.affectedRows > 0) {
+        console.log(`Auto-expired ${result.affectedRows} held parking slot(s)`);
+      }
+    } catch (error) {
+      console.log(`Error checking held slots expiration: ${error.message}`);
     }
   }
 
