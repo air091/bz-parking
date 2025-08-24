@@ -10,7 +10,7 @@ const Home = () => {
   const handleLogout = () => logout();
 
   return (
-    <div>
+    <div className="home__container">
       <header>
         <h1>Welcome to BZ Parking</h1>
       </header>

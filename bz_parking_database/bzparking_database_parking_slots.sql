@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
 --
 -- Host: localhost    Database: bzparking_database
 -- ------------------------------------------------------
--- Server version	8.0.42
+-- Server version	8.0.43
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,17 +24,16 @@ DROP TABLE IF EXISTS `parking_slots`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `parking_slots` (
   `slot_id` int NOT NULL AUTO_INCREMENT,
-  `location` varchar(50) NOT NULL,
-  `status` enum('occupied','held','available','maintenace') DEFAULT NULL,
-  `sensor_id` int NOT NULL,
+  `location` varchar(10) NOT NULL,
+  `status` enum('occupied','held','available','maintenance') NOT NULL,
+  `sensor_id` int DEFAULT NULL,
+  `vehicle_type_id` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `vehicle_type` enum('car','motor') DEFAULT NULL,
-  `rate` decimal(5,2) DEFAULT NULL,
   PRIMARY KEY (`slot_id`),
   KEY `sensor_id` (`sensor_id`),
   CONSTRAINT `parking_slots_ibfk_1` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`sensor_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +42,7 @@ CREATE TABLE `parking_slots` (
 
 LOCK TABLES `parking_slots` WRITE;
 /*!40000 ALTER TABLE `parking_slots` DISABLE KEYS */;
-INSERT INTO `parking_slots` VALUES (1,'GF','occupied',1,'2025-07-26 01:29:17','2025-07-31 14:43:31','car',20.00),(2,'GF','occupied',2,'2025-07-26 01:29:17','2025-07-31 14:43:31','car',20.00),(3,'BSMT','maintenace',3,'2025-07-26 01:29:17','2025-07-31 14:43:31','car',20.00),(4,'GF','available',4,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00),(5,'BSMT','maintenace',5,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00),(6,'GF','available',6,'2025-07-26 01:29:17','2025-07-31 14:43:31','car',20.00),(7,'GF','occupied',7,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00),(8,'BSMT','available',8,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00),(9,'GF','occupied',9,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00),(10,'GF','maintenace',10,'2025-07-26 01:29:17','2025-07-31 14:43:45','motor',10.00);
+INSERT INTO `parking_slots` VALUES (31,'GF','available',1,1,'2025-08-24 00:32:20','2025-08-24 00:32:20'),(32,'GF','available',2,1,'2025-08-24 00:32:20','2025-08-24 00:32:20'),(33,'BSMT','maintenance',3,1,'2025-08-24 00:32:20','2025-08-24 00:32:20'),(34,'GF','available',4,2,'2025-08-24 00:32:20','2025-08-24 00:32:20'),(35,'BSMT','maintenance',5,2,'2025-08-24 00:32:20','2025-08-24 00:32:20'),(36,'GF','available',6,1,'2025-08-24 00:32:20','2025-08-24 00:32:20'),(37,'GF','available',7,2,'2025-08-24 00:32:20','2025-08-24 00:32:20'),(38,'BSMT','available',8,2,'2025-08-24 00:32:20','2025-08-24 00:32:20'),(39,'GF','available',9,2,'2025-08-24 00:32:20','2025-08-24 00:32:20'),(40,'GF','maintenance',10,2,'2025-08-24 00:32:20','2025-08-24 00:32:20');
 /*!40000 ALTER TABLE `parking_slots` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-31 22:44:39
+-- Dump completed on 2025-08-24  8:33:28

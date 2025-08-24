@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
 --
 -- Host: localhost    Database: bzparking_database
 -- ------------------------------------------------------
--- Server version	8.0.42
+-- Server version	8.0.43
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -30,7 +30,7 @@ CREATE TABLE `sensors` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sensor_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `sensors` (
 
 LOCK TABLES `sensors` WRITE;
 /*!40000 ALTER TABLE `sensors` DISABLE KEYS */;
-INSERT INTO `sensors` VALUES (1,'ultrasonic','working',62,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(2,'ultrasonic','working',67,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(3,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-07-26 01:25:35'),(4,'ultrasonic','working',85,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(5,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-07-26 01:25:37'),(6,'ultrasonic','working',96,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(7,'ultrasonic','working',30,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(8,'ultrasonic','working',9,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(9,'ultrasonic','working',88,'2025-07-26 01:23:56','2025-07-27 02:26:21'),(10,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-07-27 01:52:47');
+INSERT INTO `sensors` VALUES (1,'ultrasonic','working',90,'2025-07-26 01:23:56','2025-08-20 17:37:37'),(2,'ultrasonic','working',90,'2025-07-26 01:23:56','2025-08-24 00:00:50'),(3,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-07-26 01:25:35'),(4,'ultrasonic','working',90,'2025-07-26 01:23:56','2025-08-24 00:00:55'),(5,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-07-26 01:25:37'),(6,'ultrasonic','working',90,'2025-07-26 01:23:56','2025-08-24 00:01:06'),(7,'ultrasonic','working',90,'2025-07-26 01:23:56','2025-08-24 00:01:07'),(8,'ultrasonic','working',90,'2025-07-26 01:23:56','2025-08-24 00:01:08'),(9,'ultrasonic','working',90,'2025-07-26 01:23:56','2025-08-24 00:01:09'),(10,'ultrasonic','defective',0,'2025-07-26 01:23:56','2025-08-03 01:20:36');
 /*!40000 ALTER TABLE `sensors` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-27 10:32:27
+-- Dump completed on 2025-08-24  8:33:28

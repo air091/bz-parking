@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.42, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
 --
 -- Host: localhost    Database: bzparking_database
 -- ------------------------------------------------------
--- Server version	8.0.42
+-- Server version	8.0.43
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,16 +25,16 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `user_id` int NOT NULL AUTO_INCREMENT,
   `user_type` enum('user','admin','guest') NOT NULL,
-  `first_name` varchar(32) NOT NULL,
-  `last_name` varchar(32) NOT NULL,
-  `password` varchar(64) NOT NULL,
-  `email` varchar(64) NOT NULL,
+  `first_name` varchar(32) DEFAULT NULL,
+  `last_name` varchar(32) DEFAULT NULL,
+  `password` varchar(64) DEFAULT NULL,
+  `email` varchar(64) DEFAULT NULL,
   `phone_num` varchar(20) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','Alice','Cruz','ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f','alice.cruz@example.com','+639171234567','2025-07-24 01:41:49','2025-07-24 01:41:49'),(2,'user','Juan','Dela Cruz','84d80c524fc5caa2d8b96015e6e42364d3ceb579a2eccd0ea27d700a42142da3','juan.dela.cruz@example.com','+639182223344','2025-07-24 01:41:49','2025-07-24 01:41:49'),(3,'guest','Marco','Reyes','2dd63fedc1b106924e51f30eee74bba556380a4b3f9b163c0b08adf2fe2e2204','marco.reyes@example.com',NULL,'2025-07-24 01:41:49','2025-07-24 01:41:49'),(4,'user','Luisa','Gomez','f45fcac0a9d7a2286fda225d9247a58156716293b33d8664876a004eeb49ca19','luisa.gomez@example.com','+639199876543','2025-07-24 01:41:49','2025-07-24 01:41:49'),(5,'admin','Carlos','Santos','b8b8eb83374c0bf3b1c3224159f6119dbfff1b7ed6dfecdd80d4e8a895790a34','carlos.santos@example.com','+639153456789','2025-07-24 01:41:49','2025-07-24 01:41:49'),(6,'guest','Ella','Torres','b19df80bb1142ae243cb61f1abf01c03097ed3897b7e36cca14c07232fb57cc2','ella.torres@example.com',NULL,'2025-07-24 01:41:49','2025-07-24 01:41:49'),(8,'guest','test_firstname','test_lastname','test_password_update','test@email.email',NULL,'2025-07-25 00:58:22','2025-07-25 01:06:45');
+INSERT INTO `users` VALUES (1,'admin','Alice','Cruz','ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f','alice.cruz@example.com','+639171234567','2025-07-24 01:41:49','2025-07-24 01:41:49'),(2,'user','Juan','Dela Cruz','84d80c524fc5caa2d8b96015e6e42364d3ceb579a2eccd0ea27d700a42142da3','juan.dela.cruz@example.com','+639182223344','2025-07-24 01:41:49','2025-07-24 01:41:49'),(4,'user','Luisa','Gomez','f45fcac0a9d7a2286fda225d9247a58156716293b33d8664876a004eeb49ca19','luisa.gomez@example.com','+639199876543','2025-07-24 01:41:49','2025-07-24 01:41:49'),(5,'admin','Carlos','Santos','b8b8eb83374c0bf3b1c3224159f6119dbfff1b7ed6dfecdd80d4e8a895790a34','carlos.santos@example.com','+639153456789','2025-07-24 01:41:49','2025-07-24 01:41:49');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-07-27 10:32:27
+-- Dump completed on 2025-08-24  8:33:27

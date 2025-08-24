@@ -1,3 +1,7 @@
+.home__container {
+    width: 100%;
+}
+
 .map__container main.row__3 {
     border: 2px solid red;
 }
