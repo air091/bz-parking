@@ -7,6 +7,8 @@ export const useParkingSlots = () => {
   const [error, setError] = useState(null);
   const [lastUpdateTime, setLastUpdateTime] = useState(null);
   const [hasChanges, setHasChanges] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(true); // Auto-refresh toggle
+  const [refreshInterval, setRefreshInterval] = useState(2000); // Refresh interval in ms
   const previousSlotsRef = useRef([]);
   const abortControllerRef = useRef(null);
 
@@ -90,31 +92,45 @@ export const useParkingSlots = () => {
     setLastUpdateTime(new Date());
   }, []);
 
+  // Force refresh function for manual updates
+  const forceRefresh = useCallback(() => {
+    fetchParkingSlots(true);
+  }, [fetchParkingSlots]);
+
+  // Toggle auto-refresh
+  const toggleAutoRefresh = useCallback(() => {
+    setAutoRefresh((prev) => !prev);
+  }, []);
+
+  // Change refresh interval
+  const changeRefreshInterval = useCallback((interval) => {
+    setRefreshInterval(interval);
+  }, []);
+
   // Initial fetch
   useEffect(() => {
     fetchParkingSlots();
   }, [fetchParkingSlots]);
 
-  // Smart polling based on slot status
+  // Conditional polling based on auto-refresh setting
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      // Only refresh if we have held slots that might expire soon
-      const hasHeldSlots = parkingSlots.some((slot) => slot.status === "held");
-      const hasRecentActivity =
-        hasChanges && lastUpdateTime && new Date() - lastUpdateTime < 60000; // Within last minute
+    let intervalId = null;
 
-      if (hasHeldSlots || hasRecentActivity) {
+    if (autoRefresh) {
+      intervalId = setInterval(() => {
         fetchParkingSlots();
-      }
-    }, 3000); // Check every 3 seconds for more responsive updates
+      }, refreshInterval);
+    }
 
     return () => {
-      clearInterval(intervalId);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
     };
-  }, [fetchParkingSlots, parkingSlots, hasChanges, lastUpdateTime]);
+  }, [fetchParkingSlots, autoRefresh, refreshInterval]);
 
   return {
     parkingSlots,
@@ -122,7 +138,12 @@ export const useParkingSlots = () => {
     error,
     hasChanges,
     lastUpdateTime,
+    autoRefresh,
+    refreshInterval,
     fetchParkingSlots,
     updateSlot,
+    forceRefresh,
+    toggleAutoRefresh,
+    changeRefreshInterval,
   };
 };

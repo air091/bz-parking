@@ -58,7 +58,8 @@ const ConfirmHoldSlot = ({ parkingSlot, onConfirm, onCancel, loading }) => {
         >
           <p style={{ margin: 0, color: "#495057" }}>
             Are you sure you want to hold this parking slot? This will reserve
-            it for your use, and cost you P10 for every due.
+            it for your use, and will cost you P10 for every due and{" "}
+            <span style={{ color: "red" }}>cannot be undone</span>.
           </p>
         </div>
 

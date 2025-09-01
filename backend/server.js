@@ -7,6 +7,8 @@ const sensorRoutes = require("./routes/Sensor.routes.js");
 const parkingSlotRoutes = require("./routes/ParkingSlot.routes.js");
 const paymentRoutes = require("./routes/Payment.routes.js");
 const userBalanceRoutes = require("./routes/UserBalance.routes.js");
+const parkingActivityRoutes = require("./routes/ParkingActivity.routes.js");
+const holdTransactionRoutes = require("./routes/HoldTransaction.routes.js");
 require("dotenv").config();
 
 const app = express();
@@ -19,6 +21,8 @@ app.use("/api/sensor", sensorRoutes);
 app.use("/api/parking-slot", parkingSlotRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/user-balance", userBalanceRoutes);
+app.use("/api/parking-activity", parkingActivityRoutes);
+app.use("/api/hold-transaction", holdTransactionRoutes);
 
 async function startServer() {
   try {

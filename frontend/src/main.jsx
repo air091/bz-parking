@@ -23,7 +23,6 @@ import UserLayout from "./UserLayout.jsx";
 // CONTEXT
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ProtectedRoute, PublicRoute } from "./components/ProtectedRoute.jsx";
-import TransactionPage from "./pages/TransactionPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -61,10 +60,6 @@ const router = createBrowserRouter([
         element: <Navigate to="/home" replace />,
       },
     ],
-  },
-  {
-    path: "transaction",
-    element: <TransactionPage />,
   },
   {
     path: "*",

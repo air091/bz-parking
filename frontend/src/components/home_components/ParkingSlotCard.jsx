@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import ConfirmHoldSlot from "./ConfirmHoldSlot";
+import Login from "../../pages/user/Login";
+import Register from "../../pages/user/Register";
+import ConfirmHoldTransaction from "../../pages/ConfirmHoldTransaction";
+import EndOccupancyPayment from "../../pages/EndOccupancyPayment"; // New component
 
 const ParkingSlotCard = ({
   selectedParkingSlot,
@@ -9,10 +14,16 @@ const ParkingSlotCard = ({
   onSlotUpdate,
 }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showConfirmHold, setShowConfirmHold] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [showEndOccupancyModal, setShowEndOccupancyModal] = useState(false); // New state
+  const [currentParkingActivity, setCurrentParkingActivity] = useState(null); // New state
 
   // Local state to maintain slot data independently of parent updates
   const [localSlotData, setLocalSlotData] = useState(null);
@@ -21,11 +32,29 @@ const ParkingSlotCard = ({
   useEffect(() => {
     if (selectedParkingSlot) {
       setLocalSlotData(selectedParkingSlot);
+      // Fetch current parking activity for this slot
+      fetchCurrentParkingActivity(selectedParkingSlot.slot_id);
     }
   }, [selectedParkingSlot]);
 
+  // Fetch current parking activity for the slot
+  const fetchCurrentParkingActivity = async (slotId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:2701/api/parking-activity/slot/${slotId}/active`
+      );
+      if (response.data.success) {
+        setCurrentParkingActivity(response.data.parkingActivity);
+      }
+    } catch (error) {
+      console.log("No active parking activity found for this slot");
+      setCurrentParkingActivity(null);
+    }
+  };
+
   // Calculate time remaining for held slots using local data
   useEffect(() => {
+    // Only show timer for "held" status, stop timer for "occupied" or other statuses
     if (localSlotData?.status === "held" && localSlotData?.updated_at) {
       const updateTimer = () => {
         const heldTime = new Date(localSlotData.updated_at).getTime();
@@ -49,13 +78,30 @@ const ParkingSlotCard = ({
 
       return () => clearInterval(timer);
     } else {
+      // Clear timer for non-held statuses (including "occupied")
       setTimeRemaining(null);
     }
   }, [localSlotData]);
 
   // Handle timer expiration locally without affecting parent
-  const handleTimerExpiration = () => {
+  const handleTimerExpiration = async () => {
     if (localSlotData) {
+      try {
+        // End the parking activity on the backend
+        const response = await axios.put(
+          `http://localhost:2701/api/parking-activity/end/${localSlotData.slot_id}`,
+          {
+            end_time: new Date().toISOString(),
+          }
+        );
+
+        if (response.data.success) {
+          console.log("Parking activity ended successfully");
+        }
+      } catch (error) {
+        console.error("Error ending parking activity:", error);
+      }
+
       const expiredSlot = {
         ...localSlotData,
         status: "available",
@@ -75,86 +121,6 @@ const ParkingSlotCard = ({
     }
   };
 
-  // Function to fetch updated slot data when timer expires (now optional)
-  const fetchUpdatedSlotData = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:2701/api/parking-slot/${localSlotData.slot_id}`
-      );
-
-      if (response.data.success && response.data.parkingSlot) {
-        const updatedSlot = response.data.parkingSlot;
-
-        // Ensure all required fields are present with fallbacks
-        const completeSlot = {
-          slot_id: updatedSlot.slot_id || localSlotData.slot_id,
-          status: updatedSlot.status || "available",
-          vehicle_type:
-            updatedSlot.vehicle_type ||
-            localSlotData.vehicle_type ||
-            "Not specified",
-          location: updatedSlot.location || localSlotData.location,
-          updated_at: updatedSlot.updated_at || localSlotData.updated_at,
-          vehicle_type_id:
-            updatedSlot.vehicle_type_id || localSlotData.vehicle_type_id,
-        };
-
-        // Validate that we have the essential data
-        if (!completeSlot.slot_id || !completeSlot.location) {
-          console.warn(
-            "Missing essential slot data, using original data with status update"
-          );
-          const fallbackSlot = {
-            ...localSlotData,
-            status: "available",
-            updated_at: new Date().toISOString(),
-          };
-          setLocalSlotData(fallbackSlot);
-          if (onSlotUpdate) {
-            onSlotUpdate(fallbackSlot);
-          }
-          return;
-        }
-
-        setLocalSlotData(completeSlot);
-
-        // Notify parent component about the update
-        if (onSlotUpdate) {
-          onSlotUpdate(completeSlot);
-        }
-
-        console.log(
-          "Slot status updated after timer expiration:",
-          completeSlot
-        );
-      } else {
-        // If API response is incomplete, fallback to safe default
-        console.warn("Incomplete API response, using fallback data");
-        const fallbackSlot = {
-          ...localSlotData,
-          status: "available",
-          updated_at: new Date().toISOString(),
-        };
-        setLocalSlotData(fallbackSlot);
-        if (onSlotUpdate) {
-          onSlotUpdate(fallbackSlot);
-        }
-      }
-    } catch (err) {
-      console.error("Error fetching updated slot data:", err);
-      // Fallback: preserve existing data but update status to available
-      const fallbackSlot = {
-        ...localSlotData,
-        status: "available",
-        updated_at: new Date().toISOString(),
-      };
-      setLocalSlotData(fallbackSlot);
-      if (onSlotUpdate) {
-        onSlotUpdate(fallbackSlot);
-      }
-    }
-  };
-
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -164,6 +130,7 @@ const ParkingSlotCard = ({
   const handleHoldSlotClick = () => {
     if (!user) {
       setError("You must be logged in to hold a parking slot");
+      setShowLoginModal(true);
       return;
     }
 
@@ -176,54 +143,80 @@ const ParkingSlotCard = ({
     setShowConfirmHold(true);
   };
 
-  const handleConfirmHold = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await axios.put(
-        `http://localhost:2701/api/parking-slot/${localSlotData.slot_id}`,
-        {
-          status: "held",
-        }
-      );
-
-      if (response.data.success) {
-        // Update the local slot data with current timestamp
-        const updatedSlot = {
-          ...localSlotData,
-          status: "held",
-          updated_at: new Date().toISOString(), // Set current time for timer
-        };
-
-        setLocalSlotData(updatedSlot);
-
-        // Notify parent component about the update
-        if (onSlotUpdate) {
-          onSlotUpdate(updatedSlot);
-        }
-
-        // Close confirmation popup
-        setShowConfirmHold(false);
-
-        console.log("Slot held successfully, timer should start");
-      }
-    } catch (err) {
-      setError("Failed to hold parking slot. Please try again.");
-      console.error("Error holding parking slot:", err);
-    } finally {
-      setLoading(false);
+  const handleEndOccupancyClick = () => {
+    if (!user) {
+      setError("You must be logged in to end occupancy");
+      setShowLoginModal(true);
+      return;
     }
+
+    if (localSlotData.status !== "occupied") {
+      setError("Only occupied parking slots can end occupancy");
+      return;
+    }
+
+    // Check if current user is the one occupying the slot
+    if (
+      currentParkingActivity &&
+      currentParkingActivity.user_id !== user.user_id
+    ) {
+      setError("Only the user occupying this slot can end the occupancy");
+      return;
+    }
+
+    // Show end occupancy payment modal
+    setShowEndOccupancyModal(true);
+  };
+
+  const handleConfirmHold = async () => {
+    // Close confirmation popup
+    setShowConfirmHold(false);
+
+    // Navigate to payment page with parking slot data
+    setShowTransactionModal(true);
   };
 
   const handleCancelHold = () => {
     setShowConfirmHold(false);
   };
 
-  const isSlotHoldable = user && localSlotData?.status === "available";
+  const handleEndOccupancyComplete = () => {
+    setShowEndOccupancyModal(false);
+    // Refresh the parking activity data
+    if (localSlotData) {
+      fetchCurrentParkingActivity(localSlotData.slot_id);
+    }
+  };
+
+  const isSlotHoldable = localSlotData?.status === "available";
+  const isSlotEndable =
+    localSlotData?.status === "occupied" &&
+    currentParkingActivity &&
+    currentParkingActivity.user_id === user?.user_id;
 
   // Use localSlotData instead of selectedParkingSlot for rendering
   const displaySlot = localSlotData || selectedParkingSlot;
+
+  const openLoginModal = () => {
+    setShowLoginModal(true);
+    setShowRegisterModal(false);
+  };
+
+  const openRegisterModal = () => {
+    setShowRegisterModal(true);
+    setShowLoginModal(false);
+  };
+
+  const closeModals = () => {
+    setShowLoginModal(false);
+    setShowRegisterModal(false);
+    setShowTransactionModal(false);
+    setShowEndOccupancyModal(false);
+  };
+
+  const closeTransactionModal = () => {
+    setShowTransactionModal(false);
+  };
 
   return (
     <>
@@ -255,7 +248,33 @@ const ParkingSlotCard = ({
                 </span>
               </div>
 
-              {/* Timer for held slots */}
+              {/* Show current occupant for occupied slots */}
+              {displaySlot.status === "occupied" && currentParkingActivity && (
+                <div
+                  style={{
+                    marginTop: "10px",
+                    padding: "8px",
+                    backgroundColor: "#fff3cd",
+                    borderRadius: "4px",
+                  }}
+                >
+                  <span style={{ fontWeight: "bold" }}>Current Occupant:</span>
+                  <div>User ID: {currentParkingActivity.user_id}</div>
+                  <div>
+                    Started:{" "}
+                    {new Date(
+                      currentParkingActivity.start_time
+                    ).toLocaleString()}
+                  </div>
+                  {currentParkingActivity.user_id === user?.user_id && (
+                    <div style={{ color: "#28a745", fontWeight: "bold" }}>
+                      ✓ This is your slot
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Timer for held slots ONLY - not for occupied slots */}
               {displaySlot.status === "held" && timeRemaining !== null && (
                 <div
                   style={{
@@ -291,59 +310,67 @@ const ParkingSlotCard = ({
                   )}
                 </div>
               )}
-            </div>
 
-            {/* Hold Slot Button - Only show for logged-in users with available slots */}
-            {isSlotHoldable && (
-              <div style={{ marginTop: "15px" }}>
-                <button
-                  onClick={handleHoldSlotClick}
-                  disabled={loading}
+              {/* Hold Slot Button - Only show for logged-in users with available slots */}
+              {isSlotHoldable && (
+                <div style={{ marginTop: "15px" }}>
+                  <button
+                    onClick={handleHoldSlotClick}
+                    disabled={loading}
+                    style={{
+                      backgroundColor: "#007bff",
+                      color: "white",
+                      border: "none",
+                      padding: "8px 16px",
+                      borderRadius: "4px",
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    Hold Slot
+                  </button>
+                </div>
+              )}
+
+              {/* End Occupancy Button - Only show for the user occupying the slot */}
+              {isSlotEndable && (
+                <div style={{ marginTop: "15px" }}>
+                  <button
+                    onClick={handleEndOccupancyClick}
+                    disabled={loading}
+                    style={{
+                      backgroundColor: "#dc3545",
+                      color: "white",
+                      border: "none",
+                      padding: "8px 16px",
+                      borderRadius: "4px",
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  >
+                    End Occupancy & Pay
+                  </button>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div
                   style={{
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    border: "none",
-                    padding: "8px 16px",
-                    borderRadius: "4px",
-                    cursor: loading ? "not-allowed" : "pointer",
-                    opacity: loading ? 0.6 : 1,
+                    marginTop: "10px",
+                    color: "red",
+                    fontSize: "14px",
                   }}
                 >
-                  Hold Slot
+                  {error}
+                </div>
+              )}
+
+              <div style={{ marginTop: "15px" }}>
+                <button onClick={() => setSelectedParkingSlot(null)}>
+                  Close
                 </button>
               </div>
-            )}
-
-            {/* Error Message */}
-            {error && (
-              <div
-                style={{
-                  marginTop: "10px",
-                  color: "red",
-                  fontSize: "14px",
-                }}
-              >
-                {error}
-              </div>
-            )}
-
-            {/* Not logged in message */}
-            {!user && displaySlot?.status === "available" && (
-              <div
-                style={{
-                  marginTop: "10px",
-                  color: "#666",
-                  fontSize: "14px",
-                }}
-              >
-                Please log in to hold this parking slot
-              </div>
-            )}
-
-            <div style={{ marginTop: "15px" }}>
-              <button onClick={() => setSelectedParkingSlot(null)}>
-                Close
-              </button>
             </div>
           </div>
         ) : (
@@ -359,6 +386,67 @@ const ParkingSlotCard = ({
           onCancel={handleCancelHold}
           loading={loading}
         />
+      )}
+
+      {/* Transaction Modal */}
+      {showTransactionModal && (
+        <div className="modal__overlay" onClick={closeTransactionModal}>
+          <div className="modal__content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal__close" onClick={closeTransactionModal}>
+              ×
+            </button>
+            <ConfirmHoldTransaction
+              parkingSlot={displaySlot}
+              onTransactionComplete={closeTransactionModal}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* End Occupancy Modal */}
+      {showEndOccupancyModal && (
+        <div className="modal__overlay" onClick={closeModals}>
+          <div className="modal__content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal__close" onClick={closeModals}>
+              ×
+            </button>
+            <EndOccupancyPayment
+              parkingSlot={displaySlot}
+              parkingActivity={currentParkingActivity}
+              onTransactionComplete={handleEndOccupancyComplete}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <div className="modal__overlay" onClick={closeModals}>
+          <div className="modal__content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal__close" onClick={closeModals}>
+              ×
+            </button>
+            <Login
+              onLoginSuccess={closeModals}
+              onSwitchToRegister={openRegisterModal}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Register Modal */}
+      {showRegisterModal && (
+        <div className="modal__overlay" onClick={closeModals}>
+          <div className="modal__content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal__close" onClick={closeModals}>
+              ×
+            </button>
+            <Register
+              onRegisterSuccess={closeModals}
+              onSwitchToLogin={openLoginModal}
+            />
+          </div>
+        </div>
       )}
     </>
   );

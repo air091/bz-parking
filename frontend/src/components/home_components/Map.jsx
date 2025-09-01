@@ -17,7 +17,12 @@ const Map = ({ onParkingSlotSelect }) => {
     error,
     hasChanges,
     lastUpdateTime,
+    autoRefresh,
+    refreshInterval,
     updateSlot,
+    forceRefresh,
+    toggleAutoRefresh,
+    changeRefreshInterval,
   } = useParkingSlots();
 
   // Update current time every second for real-time timer calculations
@@ -59,6 +64,15 @@ const Map = ({ onParkingSlotSelect }) => {
     setSelectedParkingSlot(null);
   };
 
+  const handleManualRefresh = () => {
+    forceRefresh();
+  };
+
+  const handleIntervalChange = (event) => {
+    const interval = parseInt(event.target.value);
+    changeRefreshInterval(interval);
+  };
+
   const filteredSlots = useMemo(() => {
     return parkingSlots.filter((slot) => {
       const vehicleMatch =
@@ -92,6 +106,75 @@ const Map = ({ onParkingSlotSelect }) => {
             <button onClick={() => setSelectedLocation("BSMT")}>BSMT</button>
           </div>
         </div>
+        {/* Auto and Manual Refresh Controls */}
+        <div
+          className="col__3"
+          style={{ display: "flex", gap: "10px", alignItems: "center" }}
+        >
+          {/* Auto-refresh toggle */}
+          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+            <label style={{ fontSize: "12px", fontWeight: "bold" }}>
+              Auto:
+            </label>
+            <button
+              onClick={toggleAutoRefresh}
+              style={{
+                padding: "4px 8px",
+                backgroundColor: autoRefresh ? "#28a745" : "#6c757d",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "11px",
+              }}
+            >
+              {autoRefresh ? "ON" : "OFF"}
+            </button>
+          </div>
+
+          {/* Refresh interval selector */}
+          {autoRefresh && (
+            <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+              <label style={{ fontSize: "12px", fontWeight: "bold" }}>
+                Interval:
+              </label>
+              <select
+                value={refreshInterval}
+                onChange={handleIntervalChange}
+                style={{
+                  padding: "2px 6px",
+                  fontSize: "11px",
+                  borderRadius: "3px",
+                  border: "1px solid #ccc",
+                }}
+              >
+                <option value={1000}>1s</option>
+                <option value={2000}>2s</option>
+                <option value={5000}>5s</option>
+                <option value={10000}>10s</option>
+                <option value={30000}>30s</option>
+              </select>
+            </div>
+          )}
+
+          {/* Manual refresh button */}
+          <button
+            onClick={handleManualRefresh}
+            disabled={loading}
+            style={{
+              padding: "6px 12px",
+              backgroundColor: "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.6 : 1,
+              fontSize: "12px",
+            }}
+          >
+            {loading ? "Refreshing..." : "🔄 Refresh"}
+          </button>
+        </div>
       </nav>
 
       <main className="row__3">
@@ -111,19 +194,30 @@ const Map = ({ onParkingSlotSelect }) => {
                     fontSize: "12px",
                     color: "#666",
                     marginBottom: "10px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  {hasChanges ? (
-                    <span style={{ color: "#4caf50" }}>
-                      ✓ Auto-updating when changes detected
-                    </span>
-                  ) : (
-                    <span style={{ color: "#666" }}>
-                      Monitoring for changes...
-                    </span>
-                  )}
+                  <div>
+                    {autoRefresh ? (
+                      <span style={{ color: "#28a745" }}>
+                        ✓ Auto-refresh enabled ({refreshInterval / 1000}s
+                        interval)
+                      </span>
+                    ) : (
+                      <span style={{ color: "#ffc107" }}>
+                        ⚠️ Auto-refresh disabled - use manual refresh
+                      </span>
+                    )}
+                    {hasChanges && (
+                      <span style={{ marginLeft: "10px", color: "#4caf50" }}>
+                        ✓ Changes detected
+                      </span>
+                    )}
+                  </div>
                   {lastUpdateTime && (
-                    <span style={{ marginLeft: "10px", fontSize: "11px" }}>
+                    <span style={{ fontSize: "11px" }}>
                       Last update: {lastUpdateTime.toLocaleTimeString()}
                     </span>
                   )}

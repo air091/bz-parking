@@ -39,10 +39,11 @@ class SensorController {
   static async updateSingleSensor(request, response) {
     try {
       const { id } = request.params;
-      const { sensorType, status } = request.body;
+      const { sensorType, status, data } = request.body;
       const updatedSensor = await Sensor.updateSingleSensorManual(id, {
         sensorType: sensorType,
         status: status,
+        data: data,
       });
 
       if (updatedSensor.length === 0)

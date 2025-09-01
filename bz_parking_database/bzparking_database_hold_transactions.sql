@@ -16,33 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `payments`
+-- Table structure for table `hold_transactions`
 --
 
-DROP TABLE IF EXISTS `payments`;
+DROP TABLE IF EXISTS `hold_transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `payments` (
-  `payment_id` int NOT NULL AUTO_INCREMENT,
-  `parking_act_id` int NOT NULL,
+CREATE TABLE `hold_transactions` (
+  `hold_transaction_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `parking_slot_id` int NOT NULL,
+  `payment_method` enum('gcash','paymaya') NOT NULL,
   `amount` decimal(5,2) NOT NULL DEFAULT '0.00',
-  `is_paid` tinyint(1) NOT NULL DEFAULT '0',
-  `payment_method` enum('gcash','paymaya','cash','n/a') NOT NULL DEFAULT 'n/a',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`payment_id`),
-  KEY `parking_act_id` (`parking_act_id`),
-  CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`parking_act_id`) REFERENCES `parking_activities` (`parking_act_id`)
+  PRIMARY KEY (`hold_transaction_id`),
+  KEY `user_id` (`user_id`),
+  KEY `parking_slot_id` (`parking_slot_id`),
+  CONSTRAINT `hold_transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `hold_transactions_ibfk_2` FOREIGN KEY (`parking_slot_id`) REFERENCES `parking_slots` (`slot_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `payments`
+-- Dumping data for table `hold_transactions`
 --
 
-LOCK TABLES `payments` WRITE;
-/*!40000 ALTER TABLE `payments` DISABLE KEYS */;
-/*!40000 ALTER TABLE `payments` ENABLE KEYS */;
+LOCK TABLES `hold_transactions` WRITE;
+/*!40000 ALTER TABLE `hold_transactions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `hold_transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
